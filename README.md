@@ -1,5 +1,5 @@
 # InventoryManagementSystem-InPythonTKINTER
-GUI Based inventory management system in python tkinter. I built this project in my 3rd semister as a practice on python tkinter framework in a course of "Data Structure And Algorithm"
+GUI Based inventory management system in python tkinter. I built this project in my 3rd semester as a practice on python tkinter framework in a course of "Data Structure And Algorithm"
 
 ![1](https://user-images.githubusercontent.com/113015136/201095992-3efefd98-2817-49e1-813f-028107866bb7.PNG)
 ![2](https://user-images.githubusercontent.com/113015136/201096007-e321b492-7312-4c0b-a2fc-9a47e07b291d.PNG)
