@@ -1,0 +1,1389 @@
+from tkinter import *
+import tkinter
+from PIL import Image, ImageTk
+import pandas as pd
+import pyodbc
+from tkinter import messagebox
+from PIL import ImageTk, Image
+import sqlite3
+from tkinter import messagebox
+from tkinter import ttk
+import sqlite3
+import time
+import datetime
+import math, random, os
+import random
+
+class TODOLIST:
+    
+    def __init__(self):
+        self.root = Toplevel(root)
+        self.root.geometry("800x500+0+0")
+        self.root.title("Retailer Section")
+        bg_color = "#074463"
+        self.root.resizable (0, 0)
+        self.root.configure(bg = "#074463")
+        
+        # Gets the requested values of the height and widht.
+        windowWidth = self.root.winfo_reqwidth()
+        windowHeight = self.root.winfo_reqheight()
+
+        # Gets both half the screen width/height and window width/height
+        positionRight = int(self.root.winfo_screenwidth()/3.2 - windowWidth/1.2)
+        positionDown = int(self.root.winfo_screenheight()/2.5 - windowHeight/1)
+
+        # Positions the window in the center of the page.
+        self.root.geometry("+{}+{}".format(positionRight, positionDown))
+        
+        tasks_list = []
+        counter = 1
+        
+        t1 = Label(self.root, text = "To Do List Store Extra's Feature", bg = "#074463", fg = "#ffffff", font = "times 20 bold")
+        t1.place(x = 210, y = 10)
+        
+        t2 = Label(self.root, text = "***********************************************************************", bg = "#074463", fg = "#ffffff", font = "times 15 italic bold")
+        t2.place(x = 35, y = 70)
+        
+        t3 = Label(self.root, text = "Enter here", bg = "#074463", fg = "#ffffff", font = "times 15 italic bold")
+        t3.place(x = 80, y = 120)
+        
+        def clear_taskNumberField():
+            tE1.delete(0.0, END)
+        
+        def clear_taskField():
+            tE1.delete(0, END)
+        
+        def inputError():
+            if tE1.get() == "":
+                messagebox.showerror("Input Error")
+                return 0
+            return 1
+        
+        def insertion():
+            global counter
+            counter = 1
+            content = tE1.get() + "\n"
+            tasks_list.append(content)
+            tE2.insert('end', "[ " + str(counter) + " ] " + content)
+            counter += 1
+            tasks_list = []
+            counter = 1
+        
+        def insertTask():
+            global counter
+            value = inputError()
+            if value == 0:
+                return
+            content = tE1.get() + "\n"
+            tasks_list.append(content)
+            tE2.insert('end', "[ " + str(counter) + " ] " + content)
+            counter += 1
+            clear_taskField()
+        
+        
+        def delete():
+            tE2.delete(1)
+        
+        
+        
+        tE1 = Entry(self.root, font = "times 18", relief = FLAT, justify = CENTER, width = "40")
+        tE1.place(x = 200, y = 120)
+        
+        tB1 = Button(self.root, text = "Submit", command = insertTask, font = "times 18 bold", relief = FLAT, width = "25", cursor = "hand2", bg = "blue", fg = "#ffffff")
+        tB1.place(x = 250, y = 180)
+        
+        tE2 = Entry(self.root, font = "times 15 bold", relief = FLAT, justify = CENTER)
+        tE2.place(x = 50, y = 260, width = 500, height = 200)
+        
+        tB2 = Button(self.root, text = "Clear", command = delete, font = "times 18 bold", relief = FLAT, width = "13", cursor = "hand2", bg = "crimson", fg = "#ffffff")
+        tB2.place(x = 580, y = 300)
+        
+        tB3 = Button(self.root, text = "Exit", command = self.root.destroy, font = "times 18 bold", relief = FLAT, width = "13", cursor = "hand2", bg = "red", fg = "#ffffff")
+        tB3.place(x = 580, y = 350)
+
+
+
+# ***************** Bill Class *****************
+
+class Bill_App:
+    
+    def __init__(self):
+        self.root = Toplevel(root)
+        self.root.geometry("1350x700+0+0")
+        self.root.title("Retailer Section")
+        bg_color = "#074463"
+        
+        # ************ Retailer Title Of Billing Section ************
+        
+        title = Label(self.root, text = "Ratailer Billing Section", fg = "white", bd = 12, relief = GROOVE, bg = bg_color, font = ("times new roman", 30, "bold"), pady = 2).pack(fill=X)
+        
+        # ************ Retailer Mode Info Label ************
+        
+        R_Mode = Label(self.root, text = "Muzamil Khan_007", font = "times 11 bold", bg = bg_color, fg = "white")
+        R_Mode.place(x = 20, y = 25)
+        
+        R_Modebtn = Button(self.root, text = "Customer Record", command = self.AddNewForm, font = "times 11 bold", bg = bg_color, fg = "white", cursor = "hand2")
+        R_Modebtn.place(x = 200, y = 25)
+        
+        # ************ Time And Date Section ************
+        
+        time1 = ''
+        clock = Label(self.root, font=('times', 12, 'bold'), bg = bg_color, fg = "white")
+        clock.place(x = 1250, y = 25)
+        
+        date = Label(self.root, font=('times', 12, 'bold'), bg = bg_color, fg = "white")
+        date.place(x = 1100, y = 25)
+        
+        def tickfortime():
+            time1=''
+            time2 = time.strftime('%I:%M:%S %p')
+            if time2 != time1:
+                time1 = time2
+                clock.config(text = time2)
+            clock.after(200, tickfortime)
+        tickfortime()
+        
+        def tickfordate():
+            time1=''
+            time2 = time.strftime('%a, %b %d, %Y')
+            if time2 != time1:
+                time1 = time2
+                date.config(text = time2)
+            date.after(200, tickfordate)
+        tickfordate()
+        
+        # **************** Variable Section ****************
+        
+        # ****** Cosmetics ******
+        self.soap = IntVar()
+        self.face_cream = IntVar()
+        self.face_wash = IntVar()
+        self.spray = IntVar()
+        self.gell = IntVar()
+        self.lotion = IntVar()
+        
+        # ****** Grocery ******
+        self.rice = IntVar()
+        self.food_oil = IntVar()
+        self.daal = IntVar()
+        self.wheat = IntVar()
+        self.sugar = IntVar()
+        self.tea = IntVar()
+        
+        # ****** Cold Drinks ******
+        self.pepsi = IntVar()
+        self.coke = IntVar()
+        self.sevenup = IntVar()
+        self.mirenda = IntVar()
+        self.maza = IntVar()
+        self.limca = IntVar()
+        
+        # ****** Total Product Price & Tax ******
+        self.cosmetic_prices = StringVar()
+        self.grocery_prices = StringVar()
+        self.colddrink_prices = StringVar()
+        self.cosmetic_tax = StringVar()
+        self.grocery_tax = StringVar()
+        self.colddrink_tax = StringVar()
+        
+        # ********** Customer **********
+        self.c_name = StringVar()
+        self.c_phone = StringVar()
+        
+        self.bill_no = StringVar()
+        x = random.randint(1000, 9999)
+        self.bill_no.set(str(x))
+        
+        self.search_bill = StringVar()
+        
+        # ********** Retailer Details Section **********
+        
+        F1 = LabelFrame(self.root, bd = 10, relief = GROOVE, text = "Retailer Details", font = ("times new roman", 15, "bold"), fg = "gold", bg = bg_color)
+        F1.place(x = 0, y = 80, relwidth = 1)
+        
+        cname_lb1 = Label(F1, text = "Retailer Name", bg = bg_color, fg = "white", font = ("times new roman", 15, "bold")).grid(row = 0, column = 0, padx = 20, pady = 5)
+        cname_txt = Entry(F1, width = 15, textvariable = self.c_name, font = "arial 15", bd = 7, relief = SUNKEN).grid(row = 0, column = 1, pady = 5, padx = 10)
+        
+        cphone_lb1 = Label(F1, text = "Phone Number", bg = bg_color, fg = "white", font = ("times new roman", 15, "bold")).grid(row = 0, column = 2, padx = 20, pady = 5)
+        cphone_txt = Entry(F1, width = 15, textvariable = self.c_phone, font = "arial 15", bd = 7, relief = SUNKEN).grid(row = 0, column = 3, pady = 5, padx = 10)
+        
+        cbill_lb1 = Label(F1, text = "Bill Number", bg = bg_color, fg = "white", font = ("times new roman", 15, "bold")).grid(row = 0, column = 4, padx = 20, pady = 5)
+        cbill_txt = Entry(F1, width = 15, textvariable = self.search_bill, font = "arial 15", bd = 7, relief = SUNKEN).grid(row = 0, column = 5, pady = 5, padx = 10)
+        
+        bill_btn = Button(F1, text = "Search", width = 10, command = self.find_bill, bd = 7, font= "arial 12 bold").grid(row = 0, column = 6, pady = 10, padx = 10)
+        
+        
+        # ********** Cosmetics Section **********
+        
+        F2 = LabelFrame(self.root, bd = 10, relief = GROOVE, text = "Cosmetics", font = ("times new roman", 15, "bold"), fg = "gold", bg = bg_color)
+        F2.place(x = 5, y = 180, width = 325, height = 380)
+        
+        bath_lb1 = Label(F2, text = "Bath Soap", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 0, column = 0, padx = 10, pady = 10, sticky = "w")
+        bath_txt = Entry(F2, width = 10, textvariable = self.soap, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 0, column = 1, padx = 10, pady = 10)
+        
+        facecream_lb1 = Label(F2, text = "Face Cream", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 1, column = 0, padx = 10, pady = 10, sticky = "w")
+        facecream_txt = Entry(F2, width = 10, textvariable = self.face_cream, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 1, column = 1, padx = 10, pady = 10)
+        
+        facew_lb1 = Label(F2, text = "Face Wash", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 2, column = 0, padx = 10, pady = 10, sticky = "w")
+        facew_txt = Entry(F2, width = 10, textvariable = self.face_wash, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 2, column = 1, padx = 10, pady = 10)
+        
+        hairg_lb1 = Label(F2, text = "Hair Spray", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 3, column = 0, padx = 10, pady = 10, sticky = "w")
+        hairg_txt = Entry(F2, width = 10, textvariable = self.spray, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 3, column = 1, padx = 10, pady = 10)
+        
+        hairs_lb1 = Label(F2, text = "Hair Gell", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 4, column = 0, padx = 10, pady = 10, sticky = "w")
+        hairs_txt = Entry(F2, width = 10, textvariable = self.gell, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 4, column = 1, padx = 10, pady = 10)
+        
+        body_lb1 = Label(F2, text = "Body Lotion", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 5, column = 0, padx = 10, pady = 10, sticky = "w")
+        body_txt = Entry(F2, width = 10, textvariable = self.lotion, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 5, column = 1, padx = 10, pady = 10)
+        
+        # ********** Grocery Section **********
+        
+        F3 = LabelFrame(self.root, bd = 10, relief = GROOVE, text = "Grocery", font = ("times new roman", 15, "bold"), fg = "gold", bg = bg_color)
+        F3.place(x = 340, y = 180, width = 325, height = 380)
+        
+        g1_lb1 = Label(F3, text = "Rice", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 0, column = 0, padx = 10, pady = 10, sticky = "w")
+        g1_txt = Entry(F3, width = 10, textvariable = self.rice, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 0, column = 1, padx = 10, pady = 10)
+        
+        g2_lb1 = Label(F3, text = "Food Oil", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 1, column = 0, padx = 10, pady = 10, sticky = "w")
+        g2_txt = Entry(F3, width = 10, textvariable = self.food_oil, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 1, column = 1, padx = 10, pady = 10)
+        
+        g3_lb1 = Label(F3, text = "Daal", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 2, column = 0, padx = 10, pady = 10, sticky = "w")
+        g3_txt = Entry(F3, width = 10, textvariable = self.daal, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 2, column = 1, padx = 10, pady = 10)
+        
+        g4_lb1 = Label(F3, text = "Wheat", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 3, column = 0, padx = 10, pady = 10, sticky = "w")
+        g4_txt = Entry(F3, width = 10, textvariable = self.wheat, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 3, column = 1, padx = 10, pady = 10)
+        
+        g5_lb1 = Label(F3, text = "Sugar", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 4, column = 0, padx = 10, pady = 10, sticky = "w")
+        g5_txt = Entry(F3, width = 10, textvariable = self.sugar, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 4, column = 1, padx = 10, pady = 10)
+        
+        g6_lb1 = Label(F3, text = "Tea", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 5, column = 0, padx = 10, pady = 10, sticky = "w")
+        g6_txt = Entry(F3, width = 10, textvariable = self.tea, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 5, column = 1, padx = 10, pady = 10)
+        
+        
+        # ********** Cold Drink Section **********
+        
+        F4 = LabelFrame(self.root, bd = 10, relief = GROOVE, text = "Cold Drink", font = ("times new roman", 15, "bold"), fg = "gold", bg = bg_color)
+        F4.place(x = 670, y = 180, width = 325, height = 380)
+        
+        cold1_lb1 = Label(F4, text = "Pepsi", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 0, column = 0, padx = 10, pady = 10, sticky = "w")
+        cold1_txt = Entry(F4, width = 10, textvariable = self.pepsi, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 0, column = 1, padx = 10, pady = 10)
+        
+        cold2_lb1 = Label(F4, text = "Coke", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 1, column = 0, padx = 10, pady = 10, sticky = "w")
+        cold2_txt = Entry(F4, width = 10, textvariable = self.coke, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 1, column = 1, padx = 10, pady = 10)
+        
+        cold3_lb1 = Label(F4, text = "7 Up", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 2, column = 0, padx = 10, pady = 10, sticky = "w")
+        cold3_txt = Entry(F4, width = 10, textvariable = self.sevenup, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 2, column = 1, padx = 10, pady = 10)
+        
+        cold4_lb1 = Label(F4, text = "Mirenda", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 3, column = 0, padx = 10, pady = 10, sticky = "w")
+        cold4_txt = Entry(F4, width = 10, textvariable = self.mirenda, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 3, column = 1, padx = 10, pady = 10)
+        
+        cold5_lb1 = Label(F4, text = "Maza", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 4, column = 0, padx = 10, pady = 10, sticky = "w")
+        cold5_txt = Entry(F4, width = 10, textvariable = self.maza, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 4, column = 1, padx = 10, pady = 10)
+        
+        cold6_lb1 = Label(F4, text = "Limca", font = ("times new roman", 16, "bold"), bg = bg_color, fg = "lightgreen").grid(row = 5, column = 0, padx = 10, pady = 10, sticky = "w")
+        cold6_txt = Entry(F4, width = 10, textvariable = self.limca, font = ("times new roman", 16, "bold"), bd = 5, relief = SUNKEN).grid(row = 5, column = 1, padx = 10, pady = 10)
+        
+        # ********** Bill Area **********
+        
+        F5 = Frame(self.root, bd = 10, relief = GROOVE)
+        F5.place(x = 1010, y = 180, width = 350, height = 380)
+        
+        bill_title = Label(F5, text = "Bill Area", font = "arail 15 bold", bd = 7, relief = GROOVE).pack(fill = X)
+        scrol_y = Scrollbar(F5, orient = VERTICAL)
+        self.txtarea = Text(F5, yscrollcommand = scrol_y.set)
+        scrol_y.pack(side = RIGHT, fill = Y)
+        scrol_y.config(command = self.txtarea.yview)
+        self.txtarea.pack(fill = BOTH, expand = 1)
+        
+        # ********** Menu Button Frame **********
+        
+        F6 = LabelFrame(self.root, bd = 10, relief = GROOVE, text = "Bill Menu", font = ("times new roman", 15, "bold"), fg = "gold", bg = bg_color)
+        F6.place(x = 0, y = 560, relwidth = 1, height = 140) 
+        
+        m1 = Label(F6, text = "Total Cosmetics Price", bg = bg_color, fg = "lightgreen", font = ("times new roman", 14, "bold")).grid(row = 0, column = 0, padx = 20, pady = 1, sticky = "w")
+        m1_txt = Entry(F6, width = 18, textvariable = self.cosmetic_prices, font = "arial 10 bold", bd = 7, relief = SUNKEN).grid(row = 0, column = 1, padx = 10, pady = 1)
+        
+        m2 = Label(F6, text = "Total Grocery Price", bg = bg_color, fg = "lightgreen", font = ("times new roman", 14, "bold")).grid(row = 1, column = 0, padx = 20, pady = 1, sticky = "w")
+        m2_txt = Entry(F6, width = 18, textvariable = self.grocery_prices, font = "arial 10 bold", bd = 7, relief = SUNKEN).grid(row = 1, column = 1, padx = 10, pady = 1)
+        
+        m3 = Label(F6, text = "Total Cold Drinks Price", bg = bg_color, fg = "lightgreen", font = ("times new roman", 14, "bold")).grid(row = 2, column = 0, padx = 20, pady = 1, sticky = "w")
+        m3_txt = Entry(F6, width = 18, textvariable = self.colddrink_prices, font = "arial 10 bold", bd = 7, relief = SUNKEN).grid(row = 2, column = 1, padx = 10, pady = 1)
+        
+        c1 = Label(F6, text = "Cosmetics Tax", bg = bg_color, fg = "lightgreen", font = ("times new roman", 14, "bold")).grid(row = 0, column = 2, padx = 20, pady = 1, sticky = "w")
+        c1_txt = Entry(F6, width = 18, textvariable = self.cosmetic_tax, font = "arial 10 bold", bd = 7, relief = SUNKEN).grid(row = 0, column = 3, padx = 10, pady = 1)
+        
+        c2 = Label(F6, text = "Grocery Tax", bg = bg_color, fg = "lightgreen", font = ("times new roman", 14, "bold")).grid(row = 1, column = 2, padx = 20, pady = 1, sticky = "w")
+        c2_txt = Entry(F6, width = 18, textvariable = self.grocery_tax, font = "arial 10 bold", bd = 7, relief = SUNKEN).grid(row = 1, column = 3, padx = 10, pady = 1)
+        
+        c3 = Label(F6, text = "Cold Drinks Tax", bg = bg_color, fg = "lightgreen", font = ("times new roman", 14, "bold")).grid(row = 2, column = 2, padx = 20, pady = 1, sticky = "w")
+        c3_txt = Entry(F6, width = 18, textvariable = self.colddrink_tax, font = "arial 10 bold", bd = 7, relief = SUNKEN).grid(row = 2, column = 3, padx = 10, pady = 1)
+        
+        # ********** Buttons Frame **********
+        
+        btn_frame = Frame(F6, bd = 7, relief = GROOVE)
+        btn_frame.place(x = 750, width = 585, height = 105)
+        
+        total_btn = Button(btn_frame, text = "Total", command = self.total, bd = 2, bg = "cadetblue", fg = "white", pady = 15, width = 10, font = "arial 15 bold").grid(row = 0, column =0, padx = 5, pady = 5)
+        GBill_btn = Button(btn_frame, text = "Print Bill", command = self.bill_area, bd = 2, bg = "cadetblue", fg = "white", pady = 15, width = 10, font = "arial 15 bold").grid(row = 0, column =1, padx = 5, pady = 5)
+        Clear_btn = Button(btn_frame, text = "Clear", bd = 2, bg = "cadetblue", fg = "white", pady = 15, width = 10, font = "arial 15 bold").grid(row = 0, column =2, padx = 5, pady = 5)
+        Exit_btn = Button(btn_frame, text = "Exit", bd = 2, bg = "cadetblue", fg = "white", pady = 15, width = 10, font = "arial 15 bold").grid(row = 0, column =3, padx = 5, pady = 5)
+        self.welcome_bill()
+        
+        
+    def total(self):
+        self.c_s_p = self.soap.get() * 40
+        self.c_fc_p = self.face_cream.get() * 120
+        self.c_fw_p = self.face_wash.get() * 60
+        self.c_hs_p = self.spray.get() * 180
+        self.c_hg_p = self.gell.get() * 140
+        self.c_bl_p = self.lotion.get() * 180
+        self.total_cosmetic_price = float(
+                                     self.c_s_p +
+                                     self.c_fc_p +
+                                     self.c_fw_p +
+                                     self.c_hs_p +                                     
+                                     self.c_hg_p +
+                                     self.c_bl_p
+                                     )
+        self.cosmetic_prices.set("Rs: " + str(self.total_cosmetic_price))
+        self.c_tax = round((self.total_cosmetic_price * 0.05), 2)
+        self.cosmetic_tax.set("Rs: " + str(self.c_tax))
+        
+        self.g_r_p = self.rice.get() * 40
+        self.g_f_p = self.food_oil.get() * 120
+        self.g_d_p = self.daal.get() * 60
+        self.g_w_p = self.wheat.get() * 180
+        self.g_s_p = self.sugar.get() * 140
+        self.g_t_p = self.tea.get() * 180
+        self.total_grocery_price = float(
+                                     self.g_r_p +
+                                     self.g_f_p +
+                                     self.g_d_p +
+                                     self.g_w_p +                                     
+                                     self.g_s_p +
+                                     self.g_t_p
+                                     )
+        self.grocery_prices.set("Rs: " + str(self.total_grocery_price))
+        self.g_tax = round((self.total_grocery_price * 0.1), 2)
+        self.grocery_tax.set("Rs: " + str(self.g_tax))
+        
+        self.d_m_p = self.pepsi.get() * 60
+        self.d_c_p = self.coke.get() * 60
+        self.d_f_p = self.sevenup.get() * 60
+        self.d_t_p = self.mirenda.get() * 50
+        self.d_l_p = self.maza.get() * 20
+        self.d_s_p = self.limca.get() * 25
+        self.total_colddrink_price = float(
+                                     self.d_m_p +
+                                     self.d_c_p +
+                                     self.d_f_p +
+                                     self.d_t_p +                                     
+                                     self.d_l_p +
+                                     self.d_s_p
+                                     )
+        self.colddrink_prices.set("Rs: " + str(self.total_colddrink_price))
+        self.d_tax = round((self.total_colddrink_price * 0.05), 2)
+        self.colddrink_tax.set("Rs: " + str(self.d_tax))
+        
+        self.Total_bill = float(self.total_cosmetic_price +
+                                 self.total_grocery_price + 
+                                 self.total_colddrink_price+
+                                 self.c_tax+
+                                 self.g_tax+
+                                 self.d_tax
+                                 )
+    
+    def welcome_bill(self):
+        self.txtarea.delete("1.0", END)
+        self.txtarea.insert(END, "\tWelcome Mk Online Store")
+        self.txtarea.insert(END, f"\n Bill Number: {self.bill_no.get()}")
+        self.txtarea.insert(END, f"\n Customer Name: {self.c_name.get()}")
+        self.txtarea.insert(END, f"\n Phone Number: {self.c_phone.get()}")
+        self.txtarea.insert(END, f"\n =====================================")
+        
+        self.txtarea.insert(END, f"\n Products\t\tQTY\t\tPrice")
+        
+        self.txtarea.insert(END, f"\n =====================================")
+        
+    def bill_area(self):
+        if self.c_name.get() == "" or self.c_phone.get() == "":
+            messagebox.showerror("Error", "Customer Details Are Missing")
+            
+        elif self.cosmetic_prices.get() == "Rs: 0.0" and self.grocery_prices.get() == "Rs: 0.0" and self.colddrink_prices.get() == "Rs: 0.0":
+            messagebox.showerror("Error", "No Products Are Purchase")
+        
+        else:
+            self.welcome_bill()
+            
+            # ******* Cosmetics *******
+            if self.soap.get() != 0:
+                self.txtarea.insert(END, f"\n Bath Soap\t\t{self.soap.get()}\t\t{self.c_s_p}")
+            if self.face_cream.get() != 0:
+                self.txtarea.insert(END, f"\n Face Cream\t\t{self.face_cream.get()}\t\t{self.c_fc_p}")
+            if self.face_wash.get() != 0:
+                self.txtarea.insert(END, f"\n Face Wash\t\t{self.face_wash.get()}\t\t{self.c_fw_p}")
+            if self.spray.get() != 0:
+                self.txtarea.insert(END, f"\n Spray\t\t{self.spray.get()}\t\t{self.c_hs_p}")
+            if self.gell.get() != 0:
+                self.txtarea.insert(END, f"\n Gell\t\t{self.gell.get()}\t\t{self.c_hg_p}")  
+            if self.lotion.get() != 0:
+                self.txtarea.insert(END, f"\n Lotion\t\t{self.lotion.get()}\t\t{self.c_bl_p}")
+            
+            # ******* Grocery *******
+            if self.rice.get() != 0:
+                self.txtarea.insert(END, f"\n Rice\t\t{self.rice.get()}\t\t{self.g_r_p}")
+            if self.food_oil.get() != 0:
+                self.txtarea.insert(END, f"\n Food Oil\t\t{self.food_oil.get()}\t\t{self.g_f_p}")
+            if self.daal.get() != 0:
+                self.txtarea.insert(END, f"\n Daal\t\t{self.daal.get()}\t\t{self.g_d_p}")
+            if self.wheat.get() != 0:
+                self.txtarea.insert(END, f"\n Wheat\t\t{self.wheat.get()}\t\t{self.g_w_p}")
+            if self.sugar.get() != 0:
+                self.txtarea.insert(END, f"\n Sugar\t\t{self.sugar.get()}\t\t{self.g_s_p}")  
+            if self.tea.get() != 0:
+                self.txtarea.insert(END, f"\n Tea\t\t{self.tea.get()}\t\t{self.g_t_p}")
+            
+            # ******* Cold Drinks *******
+            if self.pepsi.get() != 0:
+                self.txtarea.insert(END, f"\n Pepsi\t\t{self.pepsi.get()}\t\t{self.d_m_p}")
+            if self.coke.get() != 0:
+                self.txtarea.insert(END, f"\n Coke\t\t{self.coke.get()}\t\t{self.d_c_p}")
+            if self.sevenup.get() != 0:
+                self.txtarea.insert(END, f"\n 7 Up\t\t{self.sevenup.get()}\t\t{self.d_f_p}")
+            if self.mirenda.get() != 0:
+                self.txtarea.insert(END, f"\n Mirenda\t\t{self.wheat.get()}\t\t{self.d_t_p}")
+            if self.maza.get() != 0:
+                self.txtarea.insert(END, f"\n Maza\t\t{self.maza.get()}\t\t{self.d_l_p}")  
+            if self.limca.get() != 0:
+                self.txtarea.insert(END, f"\n Limca\t\t{self.limca.get()}\t\t{self.d_s_p}")
+            
+            self.txtarea.insert(END, f"\n -------------------------------------")
+            if(self.cosmetic_tax.get() != "Rs: 0.0"):
+                self.txtarea.insert(END, f"\n Cosmetics Tax\t\t\t {self.cosmetic_tax.get()}")
+            
+            if(self.grocery_tax.get() != "Rs: 0.0"):
+                self.txtarea.insert(END, f"\n Grocery Tax\t\t\t {self.grocery_tax.get()}")
+            
+            if(self.colddrink_tax.get() != "Rs: 0.0"):
+                self.txtarea.insert(END, f"\n Cold Drink Tax\t\t\t {self.colddrink_tax.get()}")
+                               
+            self.txtarea.insert(END, f"\n Total Bill: \t\t\t Rs: {self.Total_bill}")
+        
+            self.txtarea.insert(END, f"\n -------------------------------------")
+            self.save_bill()
+    
+    def save_bill(self):
+        op = messagebox.askyesno("Save Bill", "Do You Want To Save Bill Or Not?")
+        
+        if op > 0:
+            self.bill_data = self.txtarea.get('1.0', END)
+            f1 = open("Desktop\Bill" + str(self.c_name.get()) + str(self.bill_no.get()) + ".txt", "w")
+            f1.write(self.bill_data)
+            f1.close()
+            messagebox.showinfo("Saved", f"Bill no: {self.c_name.get()}{self.bill_no.get()} Saved Sucesfully")
+            self.AddCustomerRecord()
+
+        else:  
+            return
+    
+    def Database(self):
+            global conn, cursor
+            conn = sqlite3.connect("pythontut.db")
+            cursor = conn.cursor()
+            cursor.execute("CREATE TABLE IF NOT EXISTS `CustomerRecordForFeature` (product_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, Retailername TEXT, Retailnumber TEXT, Retailerbillno TEXT, Cosprice TEXT, Gosprice TEXT, Cdprice TEXT, Costax TEXT, gostax TEXT, Cdtax TEXT)")
+            conn.commit()
+    
+    def AddCustomerRecord(self):
+        self.Database()
+        cursor.execute("INSERT INTO `CustomerRecordForFeature` (Retailername, Retailnumber, Retailerbillno, Cosprice, Gosprice, Cdprice, Costax, gostax, Cdtax) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", (str(self.c_name.get()), str(self.c_phone .get()), str(self.bill_no.get()), str(self.cosmetic_prices.get()), str(self.grocery_prices.get()), str(self.colddrink_prices.get()), str(self.cosmetic_tax.get()), str(self.grocery_tax.get()), str(self.colddrink_tax.get())))
+        print(cursor)
+        conn.commit()
+        cursor.close()
+        conn.close()
+    
+    def AddNewForm(self):
+        global tree
+        mk = Toplevel(root)
+        tree = ttk.Treeview(mk, columns=("ProductID", "Retailer Name", "Retailer Number", "Retailer Billno", "Total Cosmetics Price", "Total Grocery Price", "Total Cold Drink Price", "Total Cosmetics Tax", "Total Grocery Tax", "Total Cold Drink Tax"), selectmode="extended", height=100)
+        tree.heading('ProductID', text="ProductID",anchor=W)
+        tree.heading('Retailer Name', text="Retailer Name",anchor=W)
+        tree.heading('Retailer Number', text="Retailer Number",anchor=W)
+        tree.heading('Retailer Billno', text="Retailer Billno",anchor=W)
+        tree.heading('Total Cosmetics Price', text="Total Cosmetics Price",anchor=W)
+        tree.heading('Total Grocery Price', text="Total Grocery Price",anchor=W)
+        tree.heading('Total Cold Drink Price', text="Total Cold Drink Price",anchor=W)
+        tree.heading('Total Cosmetics Tax', text="Total Cosmetics Tax",anchor=W)
+        tree.heading('Total Grocery Tax', text="Total Grocery Tax",anchor=W)
+        tree.heading('Total Cold Drink Tax', text="Total Cold Drink Tax",anchor=W)
+        tree.column('#0', stretch=NO, minwidth=0, width=0)
+        tree.column('#1', stretch=NO, minwidth=0, width=0)
+        tree.column('#2', stretch=NO, minwidth=0, width=200)
+        tree.column('#3', stretch=NO, minwidth=0, width=120)
+        tree.column('#4', stretch=NO, minwidth=0, width=120)
+        tree.column('#5', stretch=NO, minwidth=0, width=120)
+        tree.column('#6', stretch=NO, minwidth=0, width=120)
+        tree.column('#7', stretch=NO, minwidth=0, width=120)
+        tree.column('#8', stretch=NO, minwidth=0, width=120)
+        tree.column('#9', stretch=NO, minwidth=0, width=120)
+        tree.pack()
+        self.Database()
+        cursor.execute("SELECT * FROM `CustomerRecordForFeature`")
+        fetch = cursor.fetchall()
+        for data in fetch:
+            tree.insert('', 'end', values=(data))
+        cursor.close()
+        conn.close()
+    
+        
+    def find_bill(self):
+        present = "No"
+        for i in os.listdir("Desktop\Bill"):
+            if i.split('.')[0] == self.search_bill.get():
+                f1 = open(f"Desktop\Bill{i}", "r")
+                self.txtarea.delete('1.0', END)
+                
+                for d in f1:
+                    self.txtarea.insert(END, d)
+                
+                f1.close()
+                present = "Yes"
+            
+        if present == "No":
+            messagebox.showerror("Error", "Invalid Bill No")
+        
+class INVENTORY_MANAGEMENT_SYTEM_BY_MUZAMIL_KHAN():
+    def __init__(self, root):
+        self.root = root
+        self.root.geometry("800x400+0+0")
+        self.root.title("Retailer Section")
+        bg_color = "#074463"
+        self.root.resizable (0, 0)
+        self.root.configure(bg = "#074463")
+        
+        # Gets the requested values of the height and widht.
+        windowWidth = root.winfo_reqwidth()
+        windowHeight = root.winfo_reqheight()
+
+        # Gets both half the screen width/height and window width/height
+        positionRight = int(root.winfo_screenwidth()/3 - windowWidth/1.2)
+        positionDown = int(root.winfo_screenheight()/2.2 - windowHeight/1)
+
+        # Positions the window in the center of the page.
+        self.root.geometry("+{}+{}".format(positionRight, positionDown))
+        
+        f1 = Label(self.root, text = "Welcome To Inventory Management System", font = "times 25 bold", fg = "#ffffff", bg = "#074463")
+        f1.place(x = 80, y = 0)
+        
+        f2 = Label(self.root, text = "The House Of Inventory", font = "Sans 12 bold italic", fg = "#ffffff", bg = "#074463")
+        f2.place(x = 550, y = 40)
+        
+        f3 = Label(self.root, text = "______________________________________________________________________________________", font = "Sans 12 bold", fg = "#ffffff", bg = "#074463")
+        f3.place(x = 10, y = 65)
+        
+        f5 = Label(self.root, text = "Select Any Option To Continue....", font = "Sans-serif 12 bold", fg = "#ffffff", bg = "#074463")
+        f5.place(x = 280, y = 90)
+        
+        b1 = Button(self.root, text = "To Do List", command = TODOLIST, font = "times 15 bold", fg = "#ffffff", cursor="hand2", bg = "#074463", width = "31", height = "2")
+        b1.place(x = 120, y = 120)
+        
+        b2 = Button(self.root, text = "Reatailer Panel", command = self.Retailer_Login, font = "times 15 bold", fg = "#ffffff", cursor="hand2", bg = "#074463", width = "30", height = "5")
+        b2.place(x = 121, y = 183)
+        
+        b4 = Button(self.root, text = "Exit", command = root.destroy, font = "times 15 bold", fg = "#ffffff", cursor="hand2", bg = "#074463", width = "15", height = "7")
+        b4.place(x = 490, y = 120)
+        
+        f4 = Label(self.root, text = "______________________________________________________________________________________", font = "Sans 12 bold", fg = "#ffffff", bg = "#074463")
+        f4.place(x = 10, y = 300)
+        
+        f6 = Label(self.root, text = "All copyright reserved by Muzamil Khan", font = "Sans 12 bold italic", fg = "#ffffff", bg = "#074463")
+        f6.place(x = 250, y = 355)
+        
+        f7 = Label(self.root, text = "version 3.0", font = "Sans 10 italic", fg = "#ffffff", bg = "#074463")
+        f7.place(x = 700, y = 355)
+        
+        f8 = Label(self.root, text = "MK Studios", font = "Sans 10 italic", fg = "#ffffff", bg = "#074463")
+        f8.place(x = 20, y = 355)
+    
+    def Retailer_Login(self):
+        self.RLogin = Toplevel(root)
+        self.RLogin.geometry("1200x400+0+0")
+        self.RLogin.title("Retailer Section")
+        self.RLogin.resizable (0, 0)
+        self.RLogin.configure(bg = "#074463")
+        
+        # Gets the requested values of the height and widht.
+        windowWidth = self.RLogin.winfo_reqwidth()
+        windowHeight = self.RLogin.winfo_reqheight()
+
+        # Gets both half the screen width/height and window width/height
+        positionRight = int(self.RLogin.winfo_screenwidth()/5.7 - windowWidth/1.2)
+        positionDown = int(self.RLogin.winfo_screenheight()/2.2 - windowHeight/1)
+        
+        self.RLogin.geometry("+{}+{}".format(positionRight, positionDown))
+        
+        Rimg = Image.open("reatiler.png")
+        render = ImageTk.PhotoImage(Rimg)
+        img = Label(self.RLogin, image = render, width = "800", height = "400")
+        img.image = render
+        img.place(x = 0, y = 0)
+        
+        f9 = Label(self.RLogin, text = "Retailer Login Panel", font = "Sans 18 bold", fg = "#ffffff", bg = "#074463")
+        f9.place(x = 890, y = 10)
+        
+        f10 = Label(self.RLogin, text = "Username", font = "times 15", fg = "#ffffff", bg = "#074463")
+        f10.place(x = 820, y = 65)
+        
+        f10 = Label(self.RLogin, text = "Password", font = "times 15", fg = "#ffffff", bg = "#074463")
+        f10.place(x = 820, y = 120)
+        
+        E1 = Entry(self.RLogin, bd = 1, relief = FLAT, highlightcolor = "blue", justify = CENTER, width = "25", font = "times 15")
+        E1.place(x = 920, y = 68)
+        
+        E2 = Entry(self.RLogin, bd = 1, relief = FLAT, highlightcolor = "blue", show = "*", justify = CENTER, width = "25", font = "times 15")
+        E2.place(x = 920, y = 120)
+        
+        
+        
+        b7 = Button(self.RLogin, text = "Exit", command = root.destroy, relief = FLAT, fg = "#ffffff", bg = "#ff0000", width = 18, height = 2, font = "times 12 bold",  cursor = "hand2")
+        b7.place(x = 820, y = 280)
+        
+        b8 = Button(self.RLogin, text = "Back", relief = FLAT, fg = "#ffffff", bg = "blue", width = 18, height = 2, font = "times 12 bold",  cursor = "hand2")
+        b8.place(x = 1010, y = 280)
+        
+        f11 = Label(self.RLogin, text = "MK Studios Limited", font = "times 15 italic", fg = "#ffffff", bg = "#074463")
+        f11.place(x = 810, y = 358)
+        
+        f12 = Label(self.RLogin, text = "Version 3.0", font = "times 15", fg = "#ffffff", bg = "#074463")
+        f12.place(x = 1090, y = 358)
+        
+        def DatabaseLogin():
+            User = E1.get()
+            Pass = E2.get()
+            server = 'DESKTOP-6RFG9TQ\SQLEXPRESS' # Change This
+            db = 'Practice' # Change This
+            # Create the connection
+            conn = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server +'; Database=' + db + ';Trusted_Connection = yes')
+            cur = conn.cursor()
+            # query db
+            query = "SELECT  Username,Password FROM Table_2 " # Change Table name
+            cur.execute(query)
+            for(Username,Password) in cur:
+                if User == Username and Pass == Password:
+                    messagebox.askyesno("Welcome", "Welcome To Inventory Management Server")
+                    self.RLogin.destroy()
+                    Bill_App()
+                    
+                else:
+                    messagebox.askyesno("Error", "Error")
+        
+        b6 = Button(self.RLogin, text = "Submit To Login", relief = FLAT, command = DatabaseLogin, fg = "#ffffff", bg = "blue", width = 30, height = 2, font = "times 15 bold",  cursor = "hand2")
+        b6.place(x = 815, y = 180)
+
+
+class DSACASHFLOW:
+    def __init__(self,window):
+        self.window=window
+        self.window.title("MK INVENTORY CASH FLOW SYSTEM")
+        self.window.geometry("1370x700")
+        self.window.resizable (0, 0)
+        self.window.configure(bg = "#074463")
+        
+        # Gets the requested values of the height and widht.
+        windowWidth = self.window.winfo_reqwidth()
+        windowHeight = self.window.winfo_reqheight()
+
+        # Gets both half the screen width/height and window width/height
+        positionRight = int(self.window.winfo_screenwidth()/8.7 - windowWidth/1.2)
+        positionDown = int(self.window.winfo_screenheight()/3.9 - windowHeight/1)
+
+        # Positions the window in the center of the page.
+        self.window.geometry("+{}+{}".format(positionRight, positionDown))
+        
+        self.title=Label(window,text=" MK INVENTORY CASH FLOW SYSTEM ",bg="navy",fg="white",font=("Arial",40, "bold","italic"))
+        self.title.pack(side=TOP,fill=X)       
+        
+class Initial_Balance(DSACASHFLOW):
+    def __init__(self,window):
+        self.window=window
+        self.lst=[]
+        self.frame=Frame(window,bd=4,relief=RIDGE,bg="Crimson")
+        self.frame.place(x=30,y=100,width=400,height=390) 
+        
+        self.title1 = Label(self.frame,text="INITIAL BALANCE ",bg="Crimson",fg="white",font=("Arial",15, "bold","italic"))
+        self.title1.grid(row=0,columnspan=2,padx=100,pady=10)
+        
+        self.label1 = Label(self.frame,text="Beginning Cash  ",bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label1.grid(row=1,column=0,pady=5,padx=15)     
+        self.entry1=Entry(self.frame,font=("Arial",10,"italic"))
+        self.entry1.grid(row=1,column=1)
+            
+        self.label2 = Label(self.frame,text="Cash Sales  ",bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label2.grid(row=2,column=0,pady=5)
+        self.entry2=Entry(self.frame,font=("Arial",10,"italic"))
+        self.entry2.grid(row=2,column=1)
+        
+        self.label3 = Label(self.frame,text="Collections ",bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label3.grid(row=3,column=0,pady=5) 
+        self.entry3=Entry(self.frame,font=("Arial",10,"italic"))
+        self.entry3.grid(row=3,column=1)
+        
+        self.label4 = Label(self.frame,text="Loans ",bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label4.grid(row=4,column=0,pady=5)
+        self.entry4=Entry(self.frame,font=("Arial",10,"italic"))
+        self.entry4.grid(row=4,column=1)
+        
+        self.B1 = tkinter.Button(self.frame,text="TOTAL",bg="Crimson",fg="white",font=("Arial",15, "bold","italic"),command=self.Sub_total1)
+        self.B1.grid(row=6,column=1,pady=10)
+        
+    def Sub_total1(self):
+        if self.entry1.get() is '' or self.entry2.get() is '' or self.entry3.get() is '' or self.entry4.get() is '':
+            messagebox.showinfo('Warning', 'Empty')
+        else:
+            try:
+                s_total=int(self.entry1.get())
+                s_total1=int(self.entry2.get())
+                s_total2=int(self.entry3.get())
+                s_total3=int(self.entry4.get())
+
+                S1=s_total+s_total1+s_total2+s_total3
+
+                self.lst.append(s_total)
+                self.lst.append(s_total1)
+                self.lst.append(s_total2)
+                self.lst.append(s_total3)
+                self.lst.append(S1)
+
+                self.label = Label(self.frame,text="INITIAL BALANCE",bg="Crimson",fg="white",font=("Arial",15, "bold","italic"))
+                self.label.grid(row=7,columnspan=2,pady=5)
+                self.label = Label(self.frame,text=("Begining Cash :","$",s_total,"/-"),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+                self.label.grid(row=8,column=0,pady=5)
+                self.label = Label(self.frame,text=("Cash Sales :","$",s_total1,"/-"),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+                self.label.grid(row=8,column=1,pady=5)
+                self.label = Label(self.frame,text=("Collections :","$",s_total2,"/-"),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+                self.label.grid(row=9,column=0  ,pady=5)
+                self.label = Label(self.frame,text=("Loans :","$",s_total3,"/-"),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+                self.label.grid(row=9,column=1,pady=5)
+                self.label = Label(self.frame,text=("Sub Total:","$",S1,"/-"),bg="Crimson",fg="white",font=("Arial",13, "bold","italic"))
+                self.label.grid(row=10,columnspan=2,pady=5) 
+            except ValueError:
+                messagebox.showinfo('Warning', 'Wrong Data Input')
+ 
+    #==================================================================================================================#      
+
+class Expenses(DSACASHFLOW):
+    def __init__(self,window):
+        self.window=window
+        
+        self.lst1=[]
+        self.frame1=Frame(window,bd=4,relief=RIDGE,bg="Crimson")
+        self.frame1.place(x=475,y=100,width=400,height=390) 
+        
+        self.title1 = Label(self.frame1,text="EXPENSES ",bg="Crimson",fg="white",font=("Arial",15, "bold","italic"))
+        self.title1.grid(row=0,columnspan=2,padx=130,pady=10)
+        
+        self.label1 = Label(self.frame1,text=" Equipments ",bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label1.grid(row=1,column=0,pady=5,padx=15)
+        self.entry1=Entry(self.frame1,font=("Arial",10,"italic"))
+        self.entry1.grid(row=1,column=1)
+      
+        self.label2 = Label(self.frame1,text=" Shipping Cost ",bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label2.grid(row=2,column=0,pady=5)
+        self.entry2=Entry(self.frame1,font=("Arial",10,"italic"))
+        self.entry2.grid(row=2,column=1)
+        
+        self.label3 = Label(self.frame1,text="Utilities",bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label3.grid(row=3,column=0,pady=5) 
+        self.entry3=Entry(self.frame1,font=("Arial",10,"italic"))
+        self.entry3.grid(row=3,column=1)
+        
+        self.label4 = Label(self.frame1,text="Payroll ",bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label4.grid(row=4,column=0,pady=5)
+        self.entry4=Entry(self.frame1,font=("Arial",10,"italic"))
+        self.entry4.grid(row=4,column=1)
+        
+        self.B1 = tkinter.Button(self.frame1,text="TOTAL",bg="Crimson",fg="white",font=("Arial",15, "bold","italic"),command=self.Sub_total2)
+        self.B1.grid(row=6,column=1,pady=10)
+        
+    def Sub_total2(self):
+        if self.entry1.get() is '' or self.entry2.get() is '' or self.entry3.get() is '' or self.entry4.get() is '':
+            messagebox.showinfo('Warning', 'Empty')
+        else:
+            try:
+                s_total4=int(self.entry1.get())
+                s_total5=int(self.entry2.get())
+                s_total6=int(self.entry3.get())
+                s_total7=int(self.entry4.get())
+
+                S2=s_total4+s_total5+s_total6+s_total7
+
+                self.lst1.append(s_total4)
+                self.lst1.append(s_total5)
+                self.lst1.append(s_total6)
+                self.lst1.append(s_total7)
+                self.lst1.append(S2)
+
+                self.label = Label(self.frame1,text="EXPENSES",bg="Crimson",fg="white",font=("Arial",15, "bold","italic"))
+                self.label.grid(row=7,columnspan=2,pady=5)
+                self.label = Label(self.frame1,text=("Equipments :","$",s_total4,"/-"),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+                self.label.grid(row=8,column=0,pady=5)
+                self.label = Label(self.frame1,text=("Shipping Cost :","$",s_total5,"/-"),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+                self.label.grid(row=8,column=1,pady=5)
+                self.label = Label(self.frame1,text=("Utilities :","$",s_total6,"/-"),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+                self.label.grid(row=9,column=0,pady=5)
+                self.label = Label(self.frame1,text=("Payroll :","$",s_total7,"/-"),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+                self.label.grid(row=9,column=1,pady=5)
+                self.label = Label(self.frame1,text=("Sub Total:","$",S2,"/-"),bg="Crimson",fg="white",font=("Arial",13, "bold","italic"))
+                self.label.grid(row=10,columnspan=2,pady=5)
+            except ValueError:
+                messagebox.showinfo('Warning', 'Wrong Data Input')
+                
+
+     #==================================================================================================================#      
+
+
+class Taxes(DSACASHFLOW):
+    def __init__(self,window):
+        self.window=window
+        
+        self.lst2=[]
+        self.frame2=Frame(window,bd=4,relief=RIDGE,bg="Crimson")
+        self.frame2.place(x=920,y=100,width=400,height=390) 
+        
+        self.title1 = Label(self.frame2,text="TAXES ",bg="Crimson",fg="white",font=("Arial",15, "bold","italic"))
+        self.title1.grid(row=0,columnspan=2,padx=150,pady=10)
+        
+        self.label1 = Label(self.frame2,text="Federal Income Tax  ",bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label1.grid(row=1,column=0,pady=5,padx=15)
+        self.entry1=Entry(self.frame2,font=("Arial",10,"italic"))
+        self.entry1.grid(row=1,column=1)
+      
+        self.label2 = Label(self.frame2,text="State Income Tax  ",bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label2.grid(row=2,column=0,pady=5)
+        self.entry2=Entry(self.frame2,font=("Arial",10,"italic"))
+        self.entry2.grid(row=2,column=1)
+        
+        self.label3 = Label(self.frame2,text="Interest Expense ",bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label3.grid(row=3,column=0,pady=5) 
+        self.entry3=Entry(self.frame2,font=("Arial",10,"italic"))
+        self.entry3.grid(row=3,column=1)
+        
+        self.label4 = Label(self.frame2,text="Depreciation Expense ",bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label4.grid(row=4,column=0,pady=5)
+        self.entry4=Entry(self.frame2,font=("Arial",10,"italic"))
+        self.entry4.grid(row=4,column=1)
+        
+        self.B1 = tkinter.Button(self.frame2,text="TOTAL",bg="Crimson",fg="white",font=("Arial",15, "bold","italic"),command=self.Sub_total3)
+        self.B1.grid(row=6,column=1,pady=10)
+        
+    def Sub_total3(self):
+        if self.entry1.get() is '' or self.entry2.get() is '' or self.entry3.get() is '' or self.entry4.get() is '':
+            messagebox.showinfo('Warning', 'Empty')
+        else:
+            try:
+                s_total8=int(self.entry1.get())
+                s_total9=int(self.entry2.get())
+                s_total10=int(self.entry3.get())
+                s_total11=int(self.entry4.get())
+
+                S3=s_total8+s_total9+s_total10+s_total11
+
+                self.lst2.append(s_total8)
+                self.lst2.append(s_total9)
+                self.lst2.append(s_total10)
+                self.lst2.append(s_total11)
+                self.lst2.append(S3)
+
+                self.label = Label(self.frame2,text="TAXES",bg="Crimson",fg="white",font=("Arial",15, "bold","italic"))
+                self.label.grid(row=7,columnspan=2,pady=5)
+                self.label = Label(self.frame2,text=("Federal Income Tax:","$",s_total8,"/-"),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+                self.label.grid(row=8,column=0,pady=5)
+                self.label = Label(self.frame2,text=("State Income Tax  :","$",s_total9,"/-"),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+                self.label.grid(row=8,column=1,pady=5)
+                self.label = Label(self.frame2,text=("Interest Expense :","$",s_total10,"/-"),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+                self.label.grid(row=9,column=0,pady=5)
+                self.label = Label(self.frame2,text=("Depreciation Expense :","$",s_total11,"/-"),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+                self.label.grid(row=9,column=1,pady=5)
+                self.label = Label(self.frame2,text=("Sub Total:","$",S3,"/-"),bg="Crimson",fg="white",font=("Arial",13, "bold","italic"))
+                self.label.grid(row=10,columnspan=2,pady=5)
+            except ValueError:
+                messagebox.showinfo('Warning', 'Wrong Data Input')
+        
+   #==================================================================================================================# 
+ 
+class Generate_Receipt():
+    def __init__(self,window,init_bal,expen,tax):
+        
+        self.window=window
+        self.init_bal = init_bal
+        self.expen = expen
+        self.tax = tax
+        self.lst = self.init_bal.lst
+        self.lst1 = self.expen.lst1
+        self.lst2 = self.tax.lst2
+        
+        self.B1 = tkinter.Button(window,text="REPORT",bg="Crimson",fg="white",font=("Arial",15, "bold","italic"),command=self.show, width = 50, cursor = "hand2")
+        self.B1.pack(side=BOTTOM,pady=20)
+        
+    def show(self):
+        w = Tk()
+        w.title('Report')
+        w.geometry('1000x450')
+        
+        w.resizable (0, 0)
+        w.configure(bg = "#074463")
+        
+        # Gets the requested values of the height and widht.
+        windowWidth = w.winfo_reqwidth()
+        windowHeight = w.winfo_reqheight()
+
+        # Gets both half the screen width/height and window width/height
+        positionRight = int(w.winfo_screenwidth()/4 - windowWidth/1.2)
+        positionDown = int(w.winfo_screenheight()/2.2 - windowHeight/1)
+
+        # Positions the window in the center of the page.
+        w.geometry("+{}+{}".format(positionRight, positionDown))
+        
+        self.frame3=Frame(w,bd=4,relief=RIDGE,bg="Crimson")
+        self.frame3.place(x=30,y=80,width=940,height=350) 
+        
+        self.label = Label(w,text="REPORT OF CASH FLOW SYSTEM",bg="Orange",fg="white",font=("Arial",20, "bold","italic"))
+        self.label.pack(side=TOP,fill=X)
+        self.label1 = Label(w,text="YEARLY REPORT",bg="Orange",fg="white",font=("Arial",15, "bold","italic"))
+        self.label1.pack(side=TOP,fill=X)
+        
+        self.label = Label(self.frame3,text="INITIAL BALANCE",bg="Crimson",fg="white",font=("Arial",15, "bold","italic"))
+        self.label.grid(row=0,column=0,pady=5,padx=10) 
+        self.label2 = Label(self.frame3,text=("Begining Cash :","$",self.lst[0]),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label2.grid(row=1,column=0,pady=5,padx=10)  
+        self.label3= Label(self.frame3,text=("Cash Sales :","$",self.lst[1]),bg="Crimson",fg="white",font=("Arial",10,"bold","italic"))
+        self.label3.grid(row=2,column=0,pady=5)
+        self.label4 = Label(self.frame3,text=("Collections :","$",self.lst[2]),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label4.grid(row=3,column=0,pady=5)  
+        self.label5= Label(self.frame3,text=("Loans :","$",self.lst[3]),bg="Crimson",fg="white",font=("Arial",10,"bold","italic"))
+        self.label5.grid(row=4,column=0,pady=5)
+        self.label5= Label(self.frame3,text=("Sub Total:","$",self.lst[4],"/-"),bg="Crimson",fg="white",font=("Arial",15,"bold","italic"))
+        self.label5.grid(row=5,column=0,pady=5)
+        
+        self.label = Label(self.frame3,text="EXPENSES",bg="Crimson",fg="white",font=("Arial",15, "bold","italic"))
+        self.label.grid(row=0,column=3,pady=5,padx=150)
+        self.label6 = Label(self.frame3,text=("Equipments :","$",self.lst1[0]),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label6.grid(row=1,column=3,pady=5,padx=150)  
+        self.label7= Label(self.frame3,text=("Shipping Cost :","$",self.lst1[1]),bg="Crimson",fg="white",font=("Arial",10,"bold","italic"))
+        self.label7.grid(row=2,column=3,pady=5,padx=150)
+        self.label8 = Label(self.frame3,text=("Utilities :","$",self.lst1[2]),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label8.grid(row=3,column=3,pady=5,padx=150)  
+        self.label9= Label(self.frame3,text=("Payrolls :","$",self.lst1[3]),bg="Crimson",fg="white",font=("Arial",10,"bold","italic"))
+        self.label9.grid(row=4,column=3,pady=5,padx=150)
+        self.label5= Label(self.frame3,text=("Sub Total:","$",self.lst1[4],"/-"),bg="Crimson",fg="white",font=("Arial",15,"bold","italic"))
+        self.label5.grid(row=5,column=3,pady=5,padx=150)
+
+        self.label = Label(self.frame3,text="TAXES",bg="Crimson",fg="white",font=("Arial",15, "bold","italic"))
+        self.label.grid(row=0,column=6,pady=5)
+        self.label6 = Label(self.frame3,text=("Federal Tax :","$",self.lst2[0]),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label6.grid(row=1,column=6,pady=5)  
+        self.label7= Label(self.frame3,text=("State Tax :","$",self.lst2[1]),bg="Crimson",fg="white",font=("Arial",10,"bold","italic"))
+        self.label7.grid(row=2,column=6,pady=5)
+        self.label8 = Label(self.frame3,text=("Interest Expense :","$",self.lst2[2]),bg="Crimson",fg="white",font=("Arial",10, "bold","italic"))
+        self.label8.grid(row=3,column=6,pady=5)  
+        self.label9= Label(self.frame3,text=("Depreciation Expense :","$",self.lst2[3]),bg="Crimson",fg="white",font=("Arial",10,"bold","italic"))
+        self.label9.grid(row=4,column=6,pady=5)
+        self.label5= Label(self.frame3,text=("Sub Total:","$",self.lst2[4],"/-"),bg="Crimson",fg="white",font=("Arial",15,"bold","italic"))
+        self.label5.grid(row=5,column=6,pady=5)
+        
+        self.label5= Label(self.frame3,text=("Remaining Balance","$",self.lst[4]-self.lst1[4]-self.lst2[4],"/-"),bg="Crimson",fg="white",font=("Arial",25,"bold","italic"))
+        self.label5.grid(row=8,column=3,pady=20)
+        
+        if (self.lst[4]-self.lst1[4]-self.lst2[4])>=0:
+            self.label12= Label(self.frame3,text="You got some Profit ",bg="Crimson",fg="white",font=("Arial",25,"bold","italic"))
+            self.label12.grid(row=9,column=3)
+        else:
+            self.label12= Label(self.frame3,text="You got some Loss ",bg="Crimson",fg="white",font=("Arial",25,"bold","italic"))
+            self.label12.grid(row=9,column=3)
+root= Tk()
+window = Tk()
+Hyp=DSACASHFLOW(window)
+IB=Initial_Balance(window)
+E=Expenses(window)
+T=Taxes(window)
+R=Generate_Receipt(window,IB,E,T)
+root.iconbitmap(r'C:\Users\Dw\Johnathanmac-Mavrick-App-Store.ico')
+obj = INVENTORY_MANAGEMENT_SYTEM_BY_MUZAMIL_KHAN(root)
+root.mainloop()
+
+from tkinter import *
+import tkinter.messagebox as tkMessageBox
+import sqlite3
+import tkinter.ttk as ttk
+root = Tk()
+root.title("Inventory Management System")
+
+width = 1024
+height = 520
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+x = (screen_width/2) - (width/2)
+y = (screen_height/2) - (height/2)
+root.geometry("%dx%d+%d+%d" % (width, height, x, y))
+root.resizable(0, 0)
+root.config(bg="#074463")
+
+#========================================VARIABLES========================================
+USERNAME = StringVar()
+PASSWORD = StringVar()
+PRODUCT_NAME = StringVar()
+PRODUCT_PRICE = IntVar()
+PRODUCT_QTY = IntVar()
+SEARCH = StringVar()
+
+#========================================METHODS==========================================
+
+def Database():
+    global conn, cursor
+    conn = sqlite3.connect("pythontut.db")
+    cursor = conn.cursor()
+    cursor.execute("CREATE TABLE IF NOT EXISTS `admin` (admin_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, username TEXT, password TEXT)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS `product` (product_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, product_name TEXT, product_qty TEXT, product_price TEXT)")
+    cursor.execute("SELECT * FROM `admin` WHERE `username` = 'admin' AND `password` = 'admin'")
+    if cursor.fetchone() is None:
+        cursor.execute("INSERT INTO `admin` (username, password) VALUES('admin', 'admin')")
+        conn.commit()
+
+def Exit():
+    result = tkMessageBox.askquestion('Inventory Management System', 'Are you sure you want to exit?', icon="warning")
+    if result == 'yes':
+        root.destroy()
+        exit()
+
+def Exit2():
+    result = tkMessageBox.askquestion('Inventory Management System', 'Are you sure you want to exit?', icon="warning")
+    if result == 'yes':
+        Home.destroy()
+        exit()
+
+def ShowLoginForm():
+    global loginform
+    loginform = Toplevel()
+    loginform.title("Inventory Management System/Account Login")
+    width = 600
+    height = 500
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    x = (screen_width/2) - (width/2)
+    y = (screen_height/2) - (height/2)
+    loginform.resizable(0, 0)
+    loginform.geometry("%dx%d+%d+%d" % (width, height, x, y))
+    LoginForm()
+    
+def LoginForm():
+    global lbl_result
+    TopLoginForm = Frame(loginform, width=600, height=100, bd=1, relief=SOLID)
+    TopLoginForm.pack(side=TOP, pady=20)
+    lbl_text = Label(TopLoginForm, text="Administrator Login", font=('arial', 20), width = 600, bg = "navy", pady = 20, fg = "#ffffff")
+    lbl_text.pack(fill=X)
+    MidLoginForm = Frame(loginform, width=600)
+    MidLoginForm.pack(side=TOP, pady=50)
+    lbl_username = Label(MidLoginForm, text="Username:", font=('arial', 25), bd=18)
+    lbl_username.grid(row=0)
+    lbl_password = Label(MidLoginForm, text="Password:", font=('arial', 25), bd=18)
+    lbl_password.grid(row=1)
+    lbl_result = Label(MidLoginForm, text="", font=('arial', 18))
+    lbl_result.grid(row=3, columnspan=2)
+    username = Entry(MidLoginForm, textvariable=USERNAME, font=('arial', 25), width=15)
+    username.grid(row=0, column=1)
+    password = Entry(MidLoginForm, textvariable=PASSWORD, font=('arial', 25), width=15, show="*")
+    password.grid(row=1, column=1)
+    btn_login = Button(MidLoginForm, text="Login", font=('arial', 18), width=30, command=Login, bg = "blue", fg = "#ffffff", cursor = "hand2")
+    btn_login.grid(row=2, columnspan=2, pady=20)
+    btn_login.bind('<Return>', Login)
+    
+def Home():
+    global Home
+    Home = Tk()
+    Home.title("Inventory Management System/Home")
+    width = 1024
+    height = 520
+    screen_width = Home.winfo_screenwidth()
+    screen_height = Home.winfo_screenheight()
+    x = (screen_width/2) - (width/2)
+    y = (screen_height/2) - (height/2)
+    Home.geometry("%dx%d+%d+%d" % (width, height, x, y))
+    Home.resizable(0, 0)
+    Title = Frame(Home,bg = "#074463")
+    Title.pack(pady=10)
+    lbl_display = Label(Title, text="Admin Panel Inventory Section", font=('arial', 45), bg = "#074463",fg = "#ffffff")
+    lbl_display.pack()
+    lbl_display2 = Label(Title, text="Select Any Operation To Continue", pady = 30, font=('arial bold', 20), bg = "#074463",fg = "#ffffff")
+    lbl_display2.pack()
+    btn_add2 = Button(Title, text = "Logout", command = Logout, width = 35, font = ('arial bold', 18), bg = "#074463", fg = "#ffffff", cursor = "hand2")
+    btn_add2.pack()
+    btn_add4 = Button(Title, text = "Add New", command=ShowAddNew, width = 35, font = ('arial bold', 18), bg = "#074463", fg = "#ffffff", cursor = "hand2")
+    btn_add4.pack()
+    btn_add5 = Button(Title, text = "Show View", command=ShowView, width = 35, font = ('arial bold', 18), bg = "#074463", fg = "#ffffff", cursor = "hand2")
+    btn_add5.pack()
+    btn_add3 = Button(Title, text = "Exit", command = Exit2, width = 35, font = ('arial bold', 18), bg = "#074463", fg = "#ffffff", cursor = "hand2")
+    btn_add3.pack()
+    Home.config(bg="#074463")
+
+def ShowAddNew():
+    global addnewform
+    addnewform = Toplevel()
+    addnewform.title("Inventory Management System/Add new")
+    width = 600
+    height = 500
+    screen_width = Home.winfo_screenwidth()
+    screen_height = Home.winfo_screenheight()
+    x = (screen_width/2) - (width/2)
+    y = (screen_height/2) - (height/2)
+    addnewform.geometry("%dx%d+%d+%d" % (width, height, x, y))
+    addnewform.resizable(0, 0)
+    AddNewForm()
+
+def AddNewForm():
+    TopAddNew = Frame(addnewform, width=600, height=100, bd=1, relief=SOLID)
+    TopAddNew.pack(side=TOP, pady=20)
+    lbl_text = Label(TopAddNew, text="Add New Product", font=('arial', 18), width=600, bg = "navy", fg = "#ffffff", pady = 20)
+    lbl_text.pack(fill=X)
+    MidAddNew = Frame(addnewform, width=600)
+    MidAddNew.pack(side=TOP, pady=50)
+    lbl_productname = Label(MidAddNew, text="Product Name:", font=('arial', 25), bd=10)
+    lbl_productname.grid(row=0, sticky=W)
+    lbl_qty = Label(MidAddNew, text="Product Quantity:", font=('arial', 25), bd=10)
+    lbl_qty.grid(row=1, sticky=W)
+    lbl_price = Label(MidAddNew, text="Product Price:", font=('arial', 25), bd=10)
+    lbl_price.grid(row=2, sticky=W)
+    productname = Entry(MidAddNew, textvariable=PRODUCT_NAME, font=('arial', 25), width=15)
+    productname.grid(row=0, column=1)
+    productqty = Entry(MidAddNew, textvariable=PRODUCT_QTY, font=('arial', 25), width=15)
+    productqty.grid(row=1, column=1)
+    productprice = Entry(MidAddNew, textvariable=PRODUCT_PRICE, font=('arial', 25), width=15)
+    productprice.grid(row=2, column=1)
+    btn_add = Button(MidAddNew, text="Save", font=('arial', 18), width=30, bg="blue", command=AddNew, fg = "#ffffff")
+    btn_add.grid(row=3, columnspan=2, pady=20)
+
+def AddNew():
+    Database()
+    cursor.execute("INSERT INTO `product` (product_name, product_qty, product_price) VALUES(?, ?, ?)", (str(PRODUCT_NAME.get()), int(PRODUCT_QTY.get()), int(PRODUCT_PRICE.get())))
+    conn.commit()
+    PRODUCT_NAME.set("")
+    PRODUCT_PRICE.set("")
+    PRODUCT_QTY.set("")
+    cursor.close()
+    conn.close()
+
+def ViewForm():
+    global tree
+    TopViewForm = Frame(viewform, width=600, bd=1, relief=SOLID)
+    TopViewForm.pack(side=TOP, fill=X)
+    LeftViewForm = Frame(viewform, width=600)
+    LeftViewForm.pack(side=LEFT, fill=Y)
+    MidViewForm = Frame(viewform, width=600)
+    MidViewForm.pack(side=RIGHT)
+    lbl_text = Label(TopViewForm, text="View Products", font=('arial', 18), width=600, bg = "navy", fg = "#ffffff", pady = 20)
+    lbl_text.pack(fill=X)
+    lbl_txtsearch = Label(LeftViewForm, text="Search", font=('arial', 15))
+    lbl_txtsearch.pack(side=TOP, anchor=W)
+    search = Entry(LeftViewForm, textvariable=SEARCH, font=('arial', 15), width=10)
+    search.pack(side=TOP,  padx=10, fill=X)
+    btn_search = Button(LeftViewForm, text="Search", command=Search, cursor = "hand2", bg = "blue", fg = "#ffffff", font = "times 15 bold", pady = 5)
+    btn_search.pack(side=TOP, padx=10, pady=10, fill=X)
+    btn_reset = Button(LeftViewForm, text="Reset", command=Reset, cursor = "hand2", bg = "blue", fg = "#ffffff", font = "times 15 bold", pady = 5)
+    btn_reset.pack(side=TOP, padx=10, pady=10, fill=X)
+    btn_delete = Button(LeftViewForm, text="Delete", command=Delete, cursor = "hand2", bg = "#ff0000", fg = "#ffffff", font = "times 15 bold", pady = 5)
+    btn_delete.pack(side=TOP, padx=10, pady=10, fill=X)
+    scrollbarx = Scrollbar(MidViewForm, orient=HORIZONTAL)
+    scrollbary = Scrollbar(MidViewForm, orient=VERTICAL)
+    tree = ttk.Treeview(MidViewForm, columns=("ProductID", "Product Name", "Product Qty", "Product Price"), selectmode="extended", height=100, yscrollcommand=scrollbary.set, xscrollcommand=scrollbarx.set)
+    scrollbary.config(command=tree.yview)
+    scrollbary.pack(side=RIGHT, fill=Y)
+    scrollbarx.config(command=tree.xview)
+    scrollbarx.pack(side=BOTTOM, fill=X)
+    tree.heading('ProductID', text="ProductID",anchor=W)
+    tree.heading('Product Name', text="Product Name",anchor=W)
+    tree.heading('Product Qty', text="Product Qty",anchor=W)
+    tree.heading('Product Price', text="Product Price",anchor=W)
+    tree.column('#0', stretch=NO, minwidth=0, width=0)
+    tree.column('#1', stretch=NO, minwidth=0, width=0)
+    tree.column('#2', stretch=NO, minwidth=0, width=200)
+    tree.column('#3', stretch=NO, minwidth=0, width=120)
+    tree.column('#4', stretch=NO, minwidth=0, width=120)
+    tree.pack()
+    DisplayData()
+
+def DisplayData():
+    Database()
+    cursor.execute("SELECT * FROM `product`")
+    fetch = cursor.fetchall()
+    for data in fetch:
+        tree.insert('', 'end', values=(data))
+    cursor.close()
+    conn.close()
+
+def Search():
+    if SEARCH.get() != "":
+        tree.delete(*tree.get_children())
+        Database()
+        cursor.execute("SELECT * FROM `product` WHERE `product_name` LIKE ?", ('%'+str(SEARCH.get())+'%',))
+        fetch = cursor.fetchall()
+        for data in fetch:
+            tree.insert('', 'end', values=(data))
+        cursor.close()
+        conn.close()
+
+def Reset():
+    tree.delete(*tree.get_children())
+    DisplayData()
+    SEARCH.set("")
+
+def Delete():
+    if not tree.selection():
+        print("ERROR")
+    else:
+        result = tkMessageBox.askquestion('Inventory Management System', 'Are you sure you want to delete this record?', icon="warning")
+        if result == 'yes':
+            curItem = tree.focus()
+            contents =(tree.item(curItem))
+            selecteditem = contents['values']
+            tree.delete(curItem)
+            Database()
+            cursor.execute("DELETE FROM `product` WHERE `product_id` = %d" % selecteditem[0])
+            conn.commit()
+            cursor.close()
+            conn.close()
+    
+
+def ShowView():
+    global viewform
+    viewform = Toplevel()
+    viewform.title("Inventory Management System/View Product")
+    width = 600
+    height = 400
+    screen_width = Home.winfo_screenwidth()
+    screen_height = Home.winfo_screenheight()
+    x = (screen_width/2) - (width/2)
+    y = (screen_height/2) - (height/2)
+    viewform.geometry("%dx%d+%d+%d" % (width, height, x, y))
+    viewform.resizable(0, 0)
+    ViewForm()
+
+def Logout():
+    result = tkMessageBox.askquestion('Inventory Management System', 'Are you sure you want to logout?', icon="warning")
+    if result == 'yes': 
+        admin_id = ""
+        root.deiconify()
+        Home.destroy()
+
+def Login(event=None):
+    global admin_id
+    Database()
+    if USERNAME.get == "" or PASSWORD.get() == "":
+        lbl_result.config(text="Please complete the required field!", fg="red")
+    else:
+        cursor.execute("SELECT * FROM `admin` WHERE `username` = ? AND `password` = ?", (USERNAME.get(), PASSWORD.get()))
+        if cursor.fetchone() is not None:
+            cursor.execute("SELECT * FROM `admin` WHERE `username` = ? AND `password` = ?", (USERNAME.get(), PASSWORD.get()))
+            data = cursor.fetchone()
+            admin_id = data[0]
+            USERNAME.set("")
+            PASSWORD.set("")
+            lbl_result.config(text="")
+            ShowHome()
+        else:
+            lbl_result.config(text="Invalid username or password", fg="red")
+            USERNAME.set("")
+            PASSWORD.set("")
+    cursor.close()
+    conn.close() 
+
+def ShowHome():
+    root.withdraw()
+    Home()
+    loginform.destroy()
+
+Title = Frame(root, bd=1, relief=SOLID)
+Title.pack(pady=10)
+
+lbl_display = Label(Title, text="Admin Panel Inventory Section", font=('arial', 45), bg = "navy", fg = "#ffffff", width = 300)
+lbl_display.pack()
+
+lbl_display2 = Label(root, text="Admin Options Buttons", font=('times bold', 20), bg = "#074463", fg = "#ffffff")
+lbl_display2.place(x = 400, y = 100)
+
+btn_add = Button(root, text = "Login Here", command = ShowLoginForm, font = ('arial bold', 20), width = 35, bg = "#074463", fg = "#ffffff", cursor = "hand2")
+btn_add.place(x = 200, y = 160)
+
+btn_exit = Button(root, text = "Exit", command = Exit, font = ('arial bold', 20), width = 35, bg = "#ff0000", fg = "#ffffff", cursor = "hand2")
+btn_exit.place(x = 200, y = 230)
+
+lbl_copyright = Label(root, text="All copyright reserved by Muzamil Khan", font=('arial italic', 15), bg = "#074463", fg = "#ffffff")
+lbl_copyright.place(x = 350, y = 485)
+if __name__ == '__main__':
+    root.mainloop()
+    
+class Sorting(Frame):
+    def __init__(self):
+        Frame.__init__(self)
+        self.function = {0:self.bubble, 1:self.quick, 2:self.shell}
+        self.master.title("Sorting")
+        self.master.rowconfigure(5, weight=1)
+        self.master.columnconfigure(5, weight=1)
+        self.grid(sticky=W+E+N+S )
+
+        #label for sort intro
+        self.label1 = Label(self, text="Join Our Lucky Draw", width=25, height=2, bg = "#074463", fg = "#ffffff")
+        self.label1.grid(row=0, column=1, sticky=N)
+
+        #Radio buttons for sorts
+        self.v = IntVar()
+        for indx, button in enumerate(('Bubble', 'Quick', 'Shell')):
+            name = "%s Sort" % button
+            button = Radiobutton(self, text=name, variable=self.v, value=indx)
+            button.grid(row=1, column=indx, sticky=W+E+N+S)
+        button.deselect()
+
+        #button to generate number
+        self.button4 = Button(self,text='Generate no.',command=self.gen)
+        self.button4.grid(row=2, column=1, sticky=W+E+N+S)
+        self.rowconfigure(5, weight=1)
+        self.columnconfigure(5, weight=1)
+
+    def create_but2sort(self):
+        self.button5 = Button(self, text='start sorting', command=self.sortit)
+        self.button5.grid(row=4, column=1, sticky=W+E+N+S)
+        self.rowconfigure(5, weight=1 )
+        self.columnconfigure(5, weight=1)
+
+    def gen(self):
+        self.nums = [random.randint(0, 100) for x in range(10)]
+        num = ''.join('%4i' % num for num in self.nums)
+        self.label2 = Label(self, text=num, width=2, height=2)
+        self.label2.grid(row =3, columnspan=10, sticky = W+E+N+S)
+        self.create_but2sort()
+
+    def sortit(self):
+        function = self.function[self.v.get()]
+        result = function()
+        num = ''.join('%4i' % num for num in result)
+        self.label3 = Label(self, text=num, width=2, height=2)
+        self.label3.grid(row=5, columnspan=10, sticky=W+E+N+S )
+
+    def bubble(self):
+        print('bubble to be implemented')
+        messagebox.showinfo("Become Partner", "Thanks For Becoming Our Partner")
+        return sorted(self.nums)
+
+    def shell(self):
+        print('shell to be implemented')
+        messagebox.showinfo("Become Partner", "Thanks For Becoming Our Partner")
+        return sorted(self.nums)
+
+    def quick(self):
+        print('quick to be implemented')
+        messagebox.showinfo("Become Partner", "Thanks For Becoming Our Partner")
+        return sorted(self.nums)
+
+def main():
+    Sorting().mainloop()
+
+root = Tk()
+obj = Sorting()
+root.mainloop()
